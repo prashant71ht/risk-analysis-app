@@ -16,7 +16,7 @@ var db;
 const uri = "mongodb+srv://root:root@cluster0-wmgrf.mongodb.net/test?retryWrites=true&w=majority";
 
 // Connect to the database before starting the application server.
-mongodb.MongoClient.connect(process.env.MONGODB_URI || uri, function (err, client) {
+mongodb.MongoClient.connect(process.env.MONGODB_URI || uri ,{useUnifiedTopology: true}, function (err, client) {
   if (err) {
     console.log(err);
     process.exit(1);
