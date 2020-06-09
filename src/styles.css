@@ -1,1 +1,14 @@
 /* You can add global styles to this file, and also import other style files */
+
+.user-list-box {
+    height: 400px;
+    overflow: auto;
+    padding: 20px;
+    border: 1px solid;
+}
+
+.risk-btn {
+    float: right;
+    position: relative;
+    bottom: 5px;
+}

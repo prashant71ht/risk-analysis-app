@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Contact } from '../contact';
 import { ContactService } from '../contact.service';
 import { ContactDetailsComponent } from '../contact-details/contact-details.component';
+import { Risk } from '../risk';
 
 @Component({
   selector: 'contact-list',
@@ -14,18 +15,18 @@ export class ContactListComponent implements OnInit {
 
   contacts: Contact[]
   selectedContact: Contact
-
+  risk: Risk
   constructor(private contactService: ContactService) { }
 
   ngOnInit() {
-     this.contactService
+    this.createNewContact()
+    this.contactService
       .getContacts()
       .then((contacts: Contact[]) => {
         this.contacts = contacts.map((contact) => {
           if (!contact.phone) {
             contact.phone = {
               mobile: '',
-              work: ''
             }
           }
           return contact;
@@ -43,12 +44,21 @@ export class ContactListComponent implements OnInit {
     this.selectedContact = contact
   }
 
+  getRiskScore(contact) {
+    this.contactService.getRiskScore(contact.ssn).then((risk: Risk) => {
+      if (risk) {
+        this.risk = risk
+      }
+    });
+  }
+
   createNewContact() {
-    var contact: Contact = {
+    // tslint:disable-next-line:prefer-const
+    let contact: Contact = {
       name: '',
       email: '',
+      ssn: '',
       phone: {
-        work: '',
         mobile: ''
       }
     };
@@ -58,7 +68,8 @@ export class ContactListComponent implements OnInit {
   }
 
   deleteContact = (contactId: String) => {
-    var idx = this.getIndexOfContact(contactId);
+    // tslint:disable-next-line:prefer-const
+    let idx = this.getIndexOfContact(contactId);
     if (idx !== -1) {
       this.contacts.splice(idx, 1);
       this.selectContact(null);
@@ -67,13 +78,17 @@ export class ContactListComponent implements OnInit {
   }
 
   addContact = (contact: Contact) => {
-    this.contacts.push(contact);
-    this.selectContact(contact);
-    return this.contacts;
+    if (contact) {
+      this.contacts.push(contact);
+      this.selectContact(contact);
+      return this.contacts;
+    }
+
   }
 
   updateContact = (contact: Contact) => {
-    var idx = this.getIndexOfContact(contact._id);
+    // tslint:disable-next-line:prefer-const
+    let idx = this.getIndexOfContact(contact._id);
     if (idx !== -1) {
       this.contacts[idx] = contact;
       this.selectContact(contact);
